@@ -58,7 +58,7 @@ def call(body) {
 	stage 'Rollout Production'
 		def envNamespace = utils.environmentNamespace('production')
 
-	    echo "deploy project ${config.name} ${config.version}" + 
+	    echo "deploy project ${config.name} ${config.version}" 
 		echo "deploying to environment: " + envNamespace
 
 		// this file is read as default, as it is produced by maven plugin f-m-p
