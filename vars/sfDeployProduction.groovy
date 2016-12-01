@@ -43,7 +43,7 @@ def call(body) {
     	config.group= "com.stayfriends.activitystream" // TODO from pom config.group
     }
     if ( !config.rcPath ) {
-    	config.rcPath = config.group.replace(".","/") + "/" + config.version
+    	config.rcPath = config.group.replace(".","/") + "/${config.name}/${config.version}"
     }
     if ( !config.rcFile ) {
     	config.rcFile = "${config.name}-${config.version}-kubernetes.yaml"
