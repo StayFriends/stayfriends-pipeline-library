@@ -46,7 +46,7 @@ def call(body) {
     	config.rcPath = config.group.replace(".","/") + "/${config.name}/${config.version}"
     }
     if ( !config.rcFile ) {
-    	config.rcFile = "${config.name}-${config.version}-kubernetes.yaml"
+    	config.rcFile = "${config.name}-${config.version}-kubernetes.yml"
 	}
     if ( !config.rcUrl ) {
     	config.rcUrl = "${config.rcRepo}/${config.rcPath}/${config.rcFile}"
