@@ -40,7 +40,7 @@ def call(body) {
 	    config.rcRepo = "http://nexus/content/repositories/staging/"
     }
     if ( !config.rcPath ) {
-    	config.rcPath = "com/stayfriends/activitystream" // TODO from pom
+    	config.rcPath = "com/stayfriends/activitystream" // TODO from pom config.group
     }
     if ( !config.rcFile ) {
     	config.rcFile = "${config.name}-${config.version}-kubernetes.yaml"
@@ -55,31 +55,32 @@ def call(body) {
     sh "ls -al"
 
  //    //container(name: 'client') {
-	// stage 'Rollout Production'
-	// 	def envNamespace = utils.environmentNamespace('production')
-	// 	echo "deploying to environment: " + envNamespace
+	stage 'Rollout Production'
+		def envNamespace = utils.environmentNamespace('production')
 
-	// 	// get rc from nexus repo
+	    echo "deploy project ${config.name} ${config.version}" + 
+		echo "deploying to environment: " + envNamespace
 
-	// 	// this file is read as default, as it is produced by maven plugin f-m-p
-	// 	rcName = "target/classes/META-INF/fabric8/kubernetes.yml"
-	// 	rc = ""
-	// 	if ( fileExists(rcName) ) {
-	// 		rc = readFile file: rcName
-	// 	} else {
-	// 		// generate default resources
-	// 		rc = sfKubernetesResourceWebapp {
-	// 			name = config.name
-	// 			group = config.group
-	// 			version = config.version
-	// 			port = 80
-	// 			image = config.image
-	// 			icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
-	// 		}
-	// 	}
+		// this file is read as default, as it is produced by maven plugin f-m-p
+		// rcName = "target/classes/META-INF/fabric8/kubernetes.yml"
+		rcName = config.rcFile
+		rc = ""
+		if ( fileExists(rcName) ) {
+			rc = readFile file: rcName
+		} else {
+			// generate default resources
+			rc = sfKubernetesResourceWebapp {
+				name = config.name
+				group = config.group
+				version = config.version
+				port = 80
+				image = config.image
+				icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
+			}
+		}
 
-	// 	echo "applying kubernetes rc: " + rc
-	// 	kubernetesApply(file: rc, environment: envNamespace)
-	// 	//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
-	// //}
+		echo "applying kubernetes rc: " + rc
+		kubernetesApply(file: rc, environment: envNamespace)
+		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
+	//}
 }
