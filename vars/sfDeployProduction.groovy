@@ -43,7 +43,7 @@ def call(body) {
     	config.rcPath = "com/stayfriends/activitystream" // TODO from pom
     }
     if ( !config.rcFile ) {
-    	config.rcUrl = "${config.name}-${config.version}-kubernetes.yaml"
+    	config.rcFile = "${config.name}-${config.version}-kubernetes.yaml"
 	}
     if ( !config.rcUrl ) {
     	config.rcUrl = "${config.rcRepo}/${config.rcPath}/${config.rcFile}"
@@ -51,7 +51,7 @@ def call(body) {
 
     echo "deploy config = " + config
 
-    sh "wget ${config.rcUrl}"
+    sh "curl -O ${config.rcUrl}"
     sh "ls -al"
 
  //    //container(name: 'client') {
