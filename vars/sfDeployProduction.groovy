@@ -37,10 +37,13 @@ def call(body) {
 		config.image = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${utils.getNamespace()}/${config.name}:${config.version}"
     }
     if ( !config.rcRepo ) {
-	    config.rcRepo = "http://nexus/content/repositories/staging/"
+	    config.rcRepo = "http://nexus/content/repositories/staging"
+    }
+    if ( !config.group ) {
+    	config.group= "com.stayfriends.activitystream" // TODO from pom config.group
     }
     if ( !config.rcPath ) {
-    	config.rcPath = "com/stayfriends/activitystream" // TODO from pom config.group
+    	config.rcPath = config.group.replace(".","/") + "/" + config.version
     }
     if ( !config.rcFile ) {
     	config.rcFile = "${config.name}-${config.version}-kubernetes.yaml"
