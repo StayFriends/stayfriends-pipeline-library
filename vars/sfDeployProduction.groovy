@@ -27,17 +27,32 @@ def call(body) {
     // deploy kubernetes rc
 
     if ( !config.name ) {
-    	config.name = env.JOB_NAME
+    	config.name = env.JOB_NAME.replace "production-",""
     }
     if ( !config.version ) {
-    	config.version = "0.${env.BUILD_NUMBER}"
+    	config.version = "${env.VERSION}"
     }
     if ( !config.image ) {
 		// default full image name including registry
 		config.image = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${utils.getNamespace()}/${config.name}:${config.version}"
     }
+    if ( !config.rcRepo ) {
+	    config.rcRepo = "http://nexus/content/repositories/staging/"
+    }
+    if ( !config.rcPath ) {
+    	config.rcPath = "com/stayfriends/activitystream" // TODO from pom
+    }
+    if ( !config.rcFile ) {
+    	config.rcUrl = "${config.name}-${config.version}-kubernetes.yaml"
+	}
+    if ( !config.rcUrl ) {
+    	config.rcUrl = "${config.rcRepo}/${config.rcPath}/${config.rcFile}"
+	}
 
     echo "deploy config = " + config
+
+    sh "wget ${config.rcUrl}"
+    sh "ls -al"
 
  //    //container(name: 'client') {
 	// stage 'Rollout Production'
