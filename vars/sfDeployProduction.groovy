@@ -52,13 +52,18 @@ def call(body) {
     	config.rcUrl = "${config.rcRepo}/${config.rcPath}/${config.rcFile}"
 	}
 
-    echo "deploy config = " + config
+	sfApprove {
+		name = config.name
+		version = config.version
+		environment = "production"
+	}
 
-    sh "curl -O ${config.rcUrl}"
-    sh "ls -al"
-
- //    //container(name: 'client') {
 	stage 'Rollout Production'
+	    echo "deploy config = " + config
+
+	    // download kubernetes resource file
+    	sh "curl -O ${config.rcUrl}"
+
 		def envNamespace = utils.environmentNamespace('production')
 
 	    echo "deploy project ${config.name} ${config.version}" 
@@ -85,5 +90,5 @@ def call(body) {
 		echo "applying kubernetes rc: " + rc
 		kubernetesApply(file: rc, environment: envNamespace)
 		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
-	//}
+
 }
