@@ -18,7 +18,7 @@ def call(body) {
     }
     if ( !config.proceedMessage ) {
       config.proceedMessage = """
-Would you like to promote version ${config.name} ${config.version} to the ${config.environment} namespace?
+Would you like to promote ${config.name} ${config.version} to the ${config.environment} namespace?
 """
     }
 
