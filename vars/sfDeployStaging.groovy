@@ -23,6 +23,9 @@ def call(body) {
 		// default full image name including registry
 		config.image = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${utils.getNamespace()}/${config.name}:${config.version}"
     }
+    if ( !config.rcName ) {
+		config.rcName = "target/classes/META-INF/fabric8/kubernetes.yml"
+    }
     echo "deploy config = " + config
 
     //container(name: 'client') {
@@ -32,10 +35,9 @@ def call(body) {
 		echo "deploying to environment: " + envStage
 
 		// this file is read as default, as it is produced by maven plugin f-m-p
-		rcName = "target/classes/META-INF/fabric8/kubernetes.yml"
 		rc = ""
-		if ( fileExists(rcName) ) {
-			rc = readFile file: rcName
+		if ( fileExists(config.rcName) ) {
+			rc = readFile file: config.rcName
 		} else {
 			// alternative is for frontend project to generate the resource descriptions
    //    		withEnv(["KUBERNETES_NAMESPACE=${utils.getNamespace()}"]) {
