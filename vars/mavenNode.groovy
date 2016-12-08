@@ -5,7 +5,7 @@ def call(body) {
 
     echo "podTemplate label: " + nlabel
 
-    podTemplate(label: nlabel, serviceAccount: 'jenkins', containers: [
+    podTemplate(name: nlabel, label: nlabel, serviceAccount: 'jenkins', containers: [
         [name: 'maven', image: 'fabric8/maven-builder', command: 'cat', ttyEnabled: true, envVars: [
                 [key: 'MAVEN_OPTS', value: '-Duser.home=/home/jenkins/'],
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],

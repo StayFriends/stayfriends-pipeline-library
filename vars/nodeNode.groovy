@@ -11,7 +11,7 @@ def call(body) {
     def nlabel = "buildpod.${env.JOB_NAME}.${env.BUILD_NUMBER}".replace('-', '_').replace('/', '_')
     echo "podTemplate label: " + nlabel
 
-    podTemplate(label: nlabel, serviceAccount: 'jenkins', containers: [
+    podTemplate(name: nlabel, label: nlabel, serviceAccount: 'jenkins', containers: [
         [name: 'ng2-builder', image: builderImage, command: 'cat', ttyEnabled: true, envVars: [
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
                 [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
