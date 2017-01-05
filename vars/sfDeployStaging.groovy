@@ -13,6 +13,9 @@ def call(body) {
     if ( !config.name ) {
     	config.name = env.JOB_NAME
     }
+    if ( !config.environment ) {
+    	config.environment = "staging"
+    }
     if ( !config.group ) {
     	config.group = "webapp"
     }
@@ -31,7 +34,7 @@ def call(body) {
     //container(name: 'client') {
 
 	stage 'Deploy Staging' 
-		def envStage = utils.environmentNamespace('staging')
+		def envStage = utils.environmentNamespace(config.environment)
 		echo "deploying to environment: " + envStage
 
 		// this file is read as default, as it is produced by maven plugin f-m-p
