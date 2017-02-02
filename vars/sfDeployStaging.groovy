@@ -62,8 +62,9 @@ def call(body) {
 			}
 
 			// save and upload generated rc file
+			echo "uploading kubernetes rc to nexus: ${config.name}/${config.version}/kubernetes.json"
 			writeFile file: "kubernetes.json", text: rc
-			sh "curl -v -u admin:admin123 --upload-file package.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
+			sh "curl -v -u admin:admin123 --upload-file kubernetes.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
 
 		}
 
