@@ -60,6 +60,11 @@ def call(body) {
 				image = config.image
 				icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
 			}
+
+			// save and upload generated rc file
+			writeFile file: "kubernetes.json", text: rc
+			sh "curl -v -u admin:admin123 --upload-file package.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
+
 		}
 
 		echo "applying kubernetes rc: " + rc
