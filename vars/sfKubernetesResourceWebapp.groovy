@@ -43,7 +43,7 @@ def call(body) {
                 "version": "${config.version}"
             },
             "annotations": {
-                "fabric8.${config.name}/iconUrl" : "${config.icon}",
+                "fabric8.${config.name}/iconUrl" : "${config.icon}"
             }
         },
         "spec": {
@@ -55,7 +55,7 @@ def call(body) {
                 }
             ],
             "selector": {
-                "project": "${config.name}",
+                "project": "${config.name}"
             },
             "type": "LoadBalancer",
         }
@@ -80,7 +80,7 @@ def call(body) {
             "replicas": 1,
             "selector": {
                 "matchLabels": {
-                    "project": "${config.name}",
+                    "project": "${config.name}"
                 }
             },
             "template": {
