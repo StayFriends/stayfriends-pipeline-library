@@ -38,15 +38,12 @@ def call(body) {
             "labels": {
                 "group": "${config.group}",
                 "project": "${config.name}",
-                "provider": "fabric8",
+                "provider": "stayfriends",
                 "expose": "true",
                 "version": "${config.version}"
             },
             "annotations": {
                 "fabric8.${config.name}/iconUrl" : "${config.icon}",
-                "prometheus.io/port": "${config.port}",
-                "prometheus.io/scheme": "http",
-                "prometheus.io/scrape": "true"
             }
         },
         "spec": {
@@ -58,12 +55,9 @@ def call(body) {
                 }
             ],
             "selector": {
-                "group": "${config.group}",
                 "project": "${config.name}",
-                "provider": "fabric8"
             },
             "type": "LoadBalancer",
-            "sessionAffinity": "None"
         }
     },
     {
@@ -71,12 +65,11 @@ def call(body) {
         "apiVersion": "extensions/v1beta1",
         "metadata": {
             "name": "${config.name}",
-            "generation": 1,
             "creationTimestamp": null,
             "labels": {
                 "group": "${config.group}",
                 "project": "${config.name}",
-                "provider": "fabric8",
+                "provider": "stayfriends",
                 "version": "${config.version}"
             },
             "annotations": {
@@ -87,9 +80,7 @@ def call(body) {
             "replicas": 1,
             "selector": {
                 "matchLabels": {
-                    "group": "${config.group}",
                     "project": "${config.name}",
-                    "provider": "fabric8"
                 }
             },
             "template": {
@@ -98,7 +89,7 @@ def call(body) {
                     "labels": {
                         "group": "${config.group}",
                         "project": "${config.name}",
-                        "provider": "fabric8",
+                        "provider": "stayfriends",
                         "version": "${config.version}"
                     }
                 },
@@ -109,7 +100,7 @@ def call(body) {
                             "image": "${config.image}",
                             "ports": [
                                 {
-                                    "name": "web",
+                                    "name": "http",
                                     "containerPort": ${config.port},
                                     "protocol": "TCP"
                                 }
@@ -126,14 +117,10 @@ def call(body) {
                                 }
                             ],
                             "resources": {},
-                            "terminationMessagePath": "/dev/termination-log",
                             "imagePullPolicy": "IfNotPresent",
                             "securityContext": {}
                         }
                     ],
-                    "restartPolicy": "Always",
-                    "terminationGracePeriodSeconds": 30,
-                    "dnsPolicy": "ClusterFirst",
                     "securityContext": {}
                 }
             }
