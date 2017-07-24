@@ -57,7 +57,7 @@ def call(body) {
             "selector": {
                 "project": "${config.name}"
             },
-            "type": "LoadBalancer",
+            "type": "LoadBalancer"
         }
     },
     {
