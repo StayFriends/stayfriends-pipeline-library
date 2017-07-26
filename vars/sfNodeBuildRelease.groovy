@@ -36,7 +36,7 @@ def call(body) {
     container('client') {
       stage 'Build Release'
       def versionPrefix = getNodeProjectVersion()
-      def canaryVersion = "${versionPrefix}.${env.BUILD_NUMBER}"
+      def canaryVersion = "${versionPrefix}+build${env.BUILD_NUMBER}"
       dir('dist') {
         imageVersion = performCanaryRelease {
           version = canaryVersion
