@@ -19,17 +19,8 @@ def call(body) {
     // json must start with "{"
     def rc = """{
       "apiVersion" : "v1",
-      "kind" : "Template",
-      "labels" : { },
-      "metadata" : {
-        "annotations" : {
-          "description" : "${config.name} in ${config.container}",
-          "fabric8.${config.name}/iconUrl" : "${config.icon}"
-        },
-        "labels" : { },
-        "name" : "${config.name}"
-      },
-      "objects" : [{
+      "kind" : "List",
+      "items" : [{
         "kind": "Service",
         "apiVersion": "v1",
         "metadata": {
