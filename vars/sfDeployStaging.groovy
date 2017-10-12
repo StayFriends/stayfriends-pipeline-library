@@ -27,6 +27,7 @@ def call(body) {
 		config.image = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${utils.getNamespace()}/${config.name}:${config.version}"
     }
     if ( !config.rcName ) {
+		// this file is read as default, as it is produced by maven plugin f-m-p
 		config.rcName = "target/classes/META-INF/fabric8/kubernetes.yml"
     }
     echo "deploy config = " + config
@@ -34,42 +35,36 @@ def call(body) {
     //container(name: 'client') {
 
 	stage 'Deploy Staging' 
+
 		def envStage = utils.environmentNamespace(config.environment)
 		echo "deploying to environment: " + envStage
 
-		// this file is read as default, as it is produced by maven plugin f-m-p
-		rc = ""
-		if ( fileExists(config.rcName) ) {
-			rc = readFile file: config.rcName
-		} else {
-			// alternative is for frontend project to generate the resource descriptions
-   //    		withEnv(["KUBERNETES_NAMESPACE=${utils.getNamespace()}"]) {
-   //      		rc = getKubernetesJson {
-   //        			port = 80
-			// 		label = 'nginx'
-			// 		icon = 'https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg'
-			// 		version = config.version
-			//     }
-			// }
+        deployWithFabric8(envStage,config)
 
-			rc = sfKubernetesResourceWebapp {
-				name = config.name
-				group = config.group
-				version = config.version
-				port = 80
-				image = config.image
-				icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
-			}
+}
 
-			// save and upload generated rc file
-			echo "uploading kubernetes rc to nexus: ${config.name}/${config.version}/kubernetes.json"
-			writeFile file: "kubernetes.json", text: rc
-			sh "curl -v -u admin:admin123 --upload-file kubernetes.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
-
+def deployWithFabric8(String envStage, Hashmap config) {
+	rc = ""
+	if ( fileExists(config.rcName) ) {
+		rc = readFile file: config.rcName
+	} else {
+		rc = sfKubernetesResourceWebapp {
+			name = config.name
+			group = config.group
+			version = config.version
+			port = 80
+			image = config.image
+			icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
 		}
 
-		echo "applying kubernetes rc: " + rc
-		kubernetesApply(file: rc, environment: envStage)
-		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
-	//}
+		// save and upload generated rc file
+		echo "uploading kubernetes rc to nexus: ${config.name}/${config.version}/kubernetes.json"
+		writeFile file: "kubernetes.json", text: rc
+		sh "curl -v -u admin:admin123 --upload-file kubernetes.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
+
+	}
+
+	echo "applying kubernetes rc: " + rc
+	kubernetesApply(file: rc, environment: envStage)
+	//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
 }
