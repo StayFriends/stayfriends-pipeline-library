@@ -40,12 +40,12 @@ def call(body) {
 	echo "deploying to environment: " + envStage
 
     //deployWithFabric8(envStage,config)
-    def deployWithFabric8 = true
+    def deployWith = "fabric8"
 	if ( fileExists("helm") ) {
-		deployWithFabric8 = false
+		deployWith = "helm"
 	}
-	
-    if (deployWithFabric8 == true) {
+
+    if (deployWith == "fabric8") {
 		rc = ""
 		if ( fileExists(config.rcName) ) {
 			rc = readFile file: config.rcName
@@ -71,4 +71,8 @@ def call(body) {
 		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
 	}
 
+    if (deployWith == "helm") {
+    	sh "helm lint helm/${config.name}"
+    	sh "helm upgrade ${config.name}-${envStage} helm/${config.name} --namespace ${envStage} -i"
+	}
 }
