@@ -41,7 +41,10 @@ def call(body) {
 
     //deployWithFabric8(envStage,config)
     def deployWithFabric8 = true
-
+	if ( fileExists("helm") ) {
+		deployWithFabric8 = false
+	}
+	
     if (deployWithFabric8 == true) {
 		rc = ""
 		if ( fileExists(config.rcName) ) {
@@ -66,6 +69,6 @@ def call(body) {
 		echo "applying kubernetes rc: " + rc
 		kubernetesApply(file: rc, environment: envStage)
 		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
-		}
+	}
 
 }
