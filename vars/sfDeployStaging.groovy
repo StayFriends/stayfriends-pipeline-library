@@ -36,35 +36,36 @@ def call(body) {
 
 	stage 'Deploy Staging' 
 
-		def envStage = utils.environmentNamespace(config.environment)
-		echo "deploying to environment: " + envStage
+	def envStage = utils.environmentNamespace(config.environment)
+	echo "deploying to environment: " + envStage
 
-        deployWithFabric8(envStage,config)
+    //deployWithFabric8(envStage,config)
+    def deployWithFabric8 = true
 
-}
+    if (deployWithFabric8 == true) {
+		rc = ""
+		if ( fileExists(config.rcName) ) {
+			rc = readFile file: config.rcName
+		} else {
+			rc = sfKubernetesResourceWebapp {
+				name = config.name
+				group = config.group
+				version = config.version
+				port = 80
+				image = config.image
+				icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
+			}
 
-def deployWithFabric8(String envStage, Hashmap config) {
-	rc = ""
-	if ( fileExists(config.rcName) ) {
-		rc = readFile file: config.rcName
-	} else {
-		rc = sfKubernetesResourceWebapp {
-			name = config.name
-			group = config.group
-			version = config.version
-			port = 80
-			image = config.image
-			icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
+			// save and upload generated rc file
+			echo "uploading kubernetes rc to nexus: ${config.name}/${config.version}/kubernetes.json"
+			writeFile file: "kubernetes.json", text: rc
+			sh "curl -v -u admin:admin123 --upload-file kubernetes.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
+
 		}
 
-		// save and upload generated rc file
-		echo "uploading kubernetes rc to nexus: ${config.name}/${config.version}/kubernetes.json"
-		writeFile file: "kubernetes.json", text: rc
-		sh "curl -v -u admin:admin123 --upload-file kubernetes.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
+		echo "applying kubernetes rc: " + rc
+		kubernetesApply(file: rc, environment: envStage)
+		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
+		}
 
-	}
-
-	echo "applying kubernetes rc: " + rc
-	kubernetesApply(file: rc, environment: envStage)
-	//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
 }
