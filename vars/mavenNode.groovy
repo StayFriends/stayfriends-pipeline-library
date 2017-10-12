@@ -10,9 +10,9 @@ def call(body) {
                 [key: 'MAVEN_OPTS', value: '-Duser.home=/home/jenkins/'],
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
                 [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
-        // [name: 'client', image: 'fabric8/builder-clients', command: 'cat', ttyEnabled: true, envVars: [
-        //         [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
-        //         [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
+        [name: 'client', image: 'fabric8/builder-clients', command: 'cat', ttyEnabled: true, envVars: [
+                [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
+                [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
         [name: 'jnlp', image: 'iocanel/jenkins-jnlp-client:latest', command:'/usr/local/bin/start.sh', args: '${computer.jnlpmac} ${computer.name}', ttyEnabled: false,
                 envVars: [[key: 'DOCKER_HOST', value: 'unix:/var/run/docker.sock']]]],
         volumes: [

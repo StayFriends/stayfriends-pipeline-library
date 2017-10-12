@@ -72,7 +72,9 @@ def call(body) {
 	}
 
     if (deployWith == "helm") {
-    	sh "helm lint helm/${config.name}"
-    	sh "helm upgrade ${config.name}-${envStage} helm/${config.name} --namespace ${envStage} -i"
+		container(name: 'client') {
+			sh "helm lint helm/${config.name}"
+			sh "helm upgrade ${config.name}-${envStage} helm/${config.name} --namespace ${envStage} -i"
+		}
 	}
 }
