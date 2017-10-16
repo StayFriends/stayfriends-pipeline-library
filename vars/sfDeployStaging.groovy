@@ -73,9 +73,20 @@ def call(body) {
 
     if (deployWith == "helm") {
 		container(name: 'client') {
-			sh "helm lint helm/${config.name}"
-			sh "helm delete ${config.name}-${envStage}"
-			sh "helm upgrade ${config.name}-${envStage} helm/${config.name} --namespace ${envStage} --install"
+			
+			// update version for helm chart
+			def helmDir = "helm/${config.name}"
+			def chartFile = "${helmDir}/Chart.yaml"
+			def helmChart = readYAML file: chartFile
+			helmChart["version"] = config.version
+			writeYaml file: chartFile, data: helmChart
+			// TODO publish helm chart
+
+			// TODO use helm repo instead of local dir
+			sh "helm lint ${helmDir}"
+			def helmRelease = "${config.name}-${envStage}"
+			sh "helm delete ${helmRelease}" // TODO just for testing with Jobs
+			sh "helm upgrade ${helmRelease} ${helmDir} --namespace ${envStage} --install"
 		}
 	}
 }
