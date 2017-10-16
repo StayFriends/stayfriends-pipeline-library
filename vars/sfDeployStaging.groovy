@@ -79,7 +79,9 @@ def call(body) {
 			def chartFile = "${helmDir}/Chart.yaml"
 			def helmChart = readYAML file: chartFile
 			helmChart["version"] = config.version
+			echo "${chartFile} should have: ${helmChart}"
 			writeYaml file: chartFile, data: helmChart
+			sh "cat ${chartFile}"
 			// TODO publish helm chart
 
 			// TODO use helm repo instead of local dir
