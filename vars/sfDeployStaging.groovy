@@ -68,8 +68,9 @@ def call(body) {
 		}
 
 		echo "applying kubernetes rc: " + rc
-		kubernetesApply(file: rc, environment: envStage)
+		// needs to use special Fabric8 apply, which corrects resource to use internal docker registry and adds more annotations
 		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
+		kubernetesApply(file: rc, environment: envStage)
 	}
 
     if (deployWith == "helm") {
@@ -78,20 +79,24 @@ def call(body) {
 			// update version for helm chart
 			def helmDir = "helm/${config.name}"
 			def chartFile = "${helmDir}/Chart.yaml"
+			// this requires newer pipeline utils, so just use sed for now
 			// def helmChart = readYAML file: chartFile
 			// helmChart["version"] = config.version
 			// echo "${chartFile} should have: ${helmChart}"
 			// writeYaml file: chartFile, data: helmChart
 			sh "sed -i.bak \"s/0.0.1/${config.version}/g\" ${chartFile}"
 			sh "cat ${chartFile}"
+
 			// TODO publish helm chart
 
-
-
+			// install helm chart to namespace
 			// TODO use helm repo instead of local dir
 			sh "helm lint ${helmDir}"
 			def helmRelease = "${config.name}-${envStage}"
-			sh "helm delete ${helmRelease}" // TODO just for testing with Jobs
+			// for Jobs, helm need to delete the release first
+			if ( fileExists("${helmDir}/templates/job.yaml") ) {
+				sh "helm delete ${helmRelease}"
+			}
 			sh "helm upgrade ${helmRelease} ${helmDir} --namespace ${envStage} --install"
 		}
 	}
