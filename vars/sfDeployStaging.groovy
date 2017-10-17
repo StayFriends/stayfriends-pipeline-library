@@ -1,5 +1,6 @@
 #!/usr/bin/groovy
 
+
 def call(body) {
 
     // evaluate the body block, and collect configuration into the object
@@ -77,12 +78,15 @@ def call(body) {
 			// update version for helm chart
 			def helmDir = "helm/${config.name}"
 			def chartFile = "${helmDir}/Chart.yaml"
-			def helmChart = readYAML file: chartFile
-			helmChart["version"] = config.version
-			echo "${chartFile} should have: ${helmChart}"
-			writeYaml file: chartFile, data: helmChart
+			// def helmChart = readYAML file: chartFile
+			// helmChart["version"] = config.version
+			// echo "${chartFile} should have: ${helmChart}"
+			// writeYaml file: chartFile, data: helmChart
+			sh "sed -i.bak \"s/0.0.1/${config.version}/g\" ${chartFile}"
 			sh "cat ${chartFile}"
 			// TODO publish helm chart
+
+
 
 			// TODO use helm repo instead of local dir
 			sh "helm lint ${helmDir}"
@@ -92,3 +96,4 @@ def call(body) {
 		}
 	}
 }
+
