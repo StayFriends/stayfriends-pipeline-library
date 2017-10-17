@@ -21,7 +21,7 @@ def call(body) {
     	config.group = "webapp"
     }
     if ( !config.version ) {
-    	config.version = "0.${env.BUILD_NUMBER}"
+    	config.version = "1.0.${env.BUILD_NUMBER}"
     }
     if ( !config.image ) {
 		// default full image name including registry
