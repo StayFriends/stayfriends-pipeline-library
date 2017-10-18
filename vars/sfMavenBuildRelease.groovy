@@ -2,20 +2,32 @@
 
 def call(body) {
 
-    def versionPrefix = ""
-    try {
-      versionPrefix = VERSION_PREFIX
-    } catch (Throwable e) {
-      versionPrefix = "1.0"
-    }
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
 
-    def canaryVersion = "${versionPrefix}.${env.BUILD_NUMBER}"
+    if ( !config.version ) {
+        config.version = "1.0.${env.BUILD_NUMBER}"
+    }
 
     container(name: 'maven') {
-        stage 'Build Release' 
-            mavenCanaryRelease {
-                version = canaryVersion
-            }
+
+        stage('Maven deploy') {
+            sh "git checkout -b ${env.JOB_NAME}-${config.version}"
+            sh "mvn org.codehaus.mojo:versions-maven-plugin:2.2:set -U -DnewVersion=${config.version}"
+            sh "mvn --batch-mode --update-snapshots --errors clean deploy"        
+        }
+        
+        stage('Docker push') {
+            sh "mvn fabric8:push -Ddocker.push.registry=${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}"
+        }
+
     }
-    return canaryVersion
+
+    sfHelmBuildRelease {
+        version = config.version
+    }
+
+    return config.version
 }
