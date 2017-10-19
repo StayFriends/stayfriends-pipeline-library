@@ -14,12 +14,12 @@ def call(body) {
         config.version = "1.0.${env.BUILD_NUMBER}"
     }
 
-    def helmDir = "helm"
+    def helmSrcDir = "helm"
 
-    if ( fileExists(helmDir) ) {
+    if ( fileExists(helmSrcDir) ) {
         container(name: 'client') {
             stage('Helm build') {
-                def chartDir = "${helmDir}/${config.name}"
+                def chartDir = "${helmSrcDir}/${config.name}"
                 def chartFile = "${chartDir}/Chart.yaml"
 
                 sh "helm init --client-only"
