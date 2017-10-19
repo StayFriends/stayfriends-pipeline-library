@@ -22,6 +22,8 @@ def call(body) {
                 def chartDir = "${helmDir}/${config.name}"
                 def chartFile = "${chartDir}/Chart.yaml"
 
+                sh "helm init --client-only"
+
                 // verify chart
                 sh "helm lint ${chartDir}"
 
