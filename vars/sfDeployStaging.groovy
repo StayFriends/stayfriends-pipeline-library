@@ -35,8 +35,6 @@ def call(body) {
 
     //container(name: 'client') {
 
-	stage 'Deploy Staging' 
-
 	def envStage = utils.environmentNamespace(config.environment)
 	echo "deploying to environment: " + envStage
 
@@ -51,53 +49,44 @@ def call(body) {
 		if ( fileExists(config.rcName) ) {
 			rc = readFile file: config.rcName
 		} else {
-			rc = sfKubernetesResourceWebapp {
-				name = config.name
-				group = config.group
-				version = config.version
-				port = 80
-				image = config.image
-				icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
+			stage('Generate Kubernetes resources') {
+				rc = sfKubernetesResourceWebapp {
+					name = config.name
+					group = config.group
+					version = config.version
+					port = 80
+					image = config.image
+					icon = "https://cdn.rawgit.com/fabric8io/fabric8/dc05040/website/src/images/logos/nodejs.svg"
+				}
+
+				// save and upload generated rc file
+				echo "uploading kubernetes rc to nexus: ${config.name}/${config.version}/kubernetes.json"
+				writeFile file: "kubernetes.json", text: rc
+				sh "curl -v -u admin:admin123 --upload-file kubernetes.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
 			}
-
-			// save and upload generated rc file
-			echo "uploading kubernetes rc to nexus: ${config.name}/${config.version}/kubernetes.json"
-			writeFile file: "kubernetes.json", text: rc
-			sh "curl -v -u admin:admin123 --upload-file kubernetes.json http://nexus/content/repositories/staging/${config.name}/${config.version}/kubernetes.json"
-
 		}
 
-		echo "applying kubernetes rc: " + rc
-		// needs to use special Fabric8 apply, which corrects resource to use internal docker registry and adds more annotations
-		//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
-		kubernetesApply(file: rc, environment: envStage)
+		stage('Deploy with Fabric8') {
+			echo "applying kubernetes rc: " + rc
+			// needs to use special Fabric8 apply, which corrects resource to use internal docker registry and adds more annotations
+			//sh "kubectl apply -f target/classes/META-INF/fabric8/kubernetes.yml"
+			kubernetesApply(file: rc, environment: envStage)
+		}
 	}
 
     if (deployWith == "helm") {
-		container(name: 'client') {
-			
-			// update version for helm chart
-			def helmDir = "helm/${config.name}"
-			def chartFile = "${helmDir}/Chart.yaml"
-			// this requires newer pipeline utils, so just use sed for now
-			// def helmChart = readYAML file: chartFile
-			// helmChart["version"] = config.version
-			// echo "${chartFile} should have: ${helmChart}"
-			// writeYaml file: chartFile, data: helmChart
-			sh "sed -i.bak \"s/0.0.1/${config.version}/g\" ${chartFile}"
-			sh "cat ${chartFile}"
-
-			// TODO publish helm chart
-
-			// install helm chart to namespace
-			// TODO use helm repo instead of local dir
-			sh "helm lint ${helmDir}"
-			def helmRelease = "${config.name}-${envStage}"
-			// for Jobs, helm need to delete the release first
-			if ( fileExists("${helmDir}/templates/job.yaml") ) {
-				sh "helm delete ${helmRelease}"
+		stage('Helm deploy') {
+			container(name: 'client') {
+				// install helm chart to namespace
+				// TODO use helm repo instead of local dir
+	            def chartPackage = "${config.name}-${config.version}.tgz"
+				def helmRelease = "${config.name}-${envStage}"
+				// // for Jobs, helm need to delete the release first
+				// if ( fileExists("helm/${config.name}/templates/job.yaml") ) {
+				// 	sh "helm delete ${helmRelease}"
+				// }
+				sh "helm upgrade ${helmRelease} ${chartPackage} --namespace ${envStage} --install --force"
 			}
-			sh "helm upgrade ${helmRelease} ${helmDir} --namespace ${envStage} --install"
 		}
 	}
 }

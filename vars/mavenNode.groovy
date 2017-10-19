@@ -10,7 +10,7 @@ def call(body) {
                 [key: 'MAVEN_OPTS', value: '-Duser.home=/home/jenkins/'],
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
                 [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
-        [name: 'client', image: '10.3.0.169:80/f8/builder-clients:1.0.4', command: 'cat', ttyEnabled: true, envVars: [
+        [name: 'client', image: '10.3.0.169:80/f8/builder-clients:1.0.5', command: 'cat', ttyEnabled: true, envVars: [
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
                 [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
         [name: 'jnlp', image: 'iocanel/jenkins-jnlp-client:latest', command:'/usr/local/bin/start.sh', args: '${computer.jnlpmac} ${computer.name}', ttyEnabled: false,
