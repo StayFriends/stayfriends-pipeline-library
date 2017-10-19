@@ -11,8 +11,9 @@ def call(body) {
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
                 [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
         [name: 'client', image: '10.3.0.169:80/f8/builder-clients:1.0.5', command: 'cat', ttyEnabled: true, envVars: [
-                secretEnvVar(secretName: "helmrepo-minio-user", key: 'AWS_ACCESS_KEY_ID', secretKey: 'accesskey'),
-                secretEnvVar(secretName: "helmrepo-minio-user", key: 'AWS_SECRET_ACCESS_KEY', secretKey: 'secretkey'),
+                // TODO update kubernetes plugin from 0.9 to min 1.0
+                //secretEnvVar(secretName: "helmrepo-minio-user", key: 'AWS_ACCESS_KEY_ID', secretKey: 'accesskey'),
+                //secretEnvVar(secretName: "helmrepo-minio-user", key: 'AWS_SECRET_ACCESS_KEY', secretKey: 'secretkey'),
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
                 [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
         [name: 'jnlp', image: 'iocanel/jenkins-jnlp-client:latest', command:'/usr/local/bin/start.sh', args: '${computer.jnlpmac} ${computer.name}', ttyEnabled: false,
