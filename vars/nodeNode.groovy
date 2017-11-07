@@ -5,7 +5,7 @@ def call(body) {
     def namespace = utils.getNamespace()
     // TODO - check why env not available here, hardcoded f8 namespace service
     //def builderImage = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/ng2-builder:latest"
-    def builderImage = "10.3.0.169:80/${namespace}/ng2-builder:latest"
+    def builderImage = "10.3.0.169:80/${namespace}/ng2-builder:1.0.15"
     echo 'using builder image: ' + builderImage
 
     def nlabel = "buildpod.${env.JOB_NAME}.${env.BUILD_NUMBER}".replace('-', '_').replace('/', '_')
