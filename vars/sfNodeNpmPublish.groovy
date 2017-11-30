@@ -16,8 +16,12 @@ def call(body) {
             sh 'npm run test'
         }
 
-        stage 'NPM Publish'
-        sh 'npm config set registry http://???'
-        sh 'npm publish'
+        stage 'Build'
+        sh 'npm run dist'
+
+        if ( fileExists("dist") ) {
+            stage 'NPM Publish'
+            sh 'cd dist && npm publish'
+        }
     }
 }
