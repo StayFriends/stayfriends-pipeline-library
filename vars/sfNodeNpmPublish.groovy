@@ -17,7 +17,7 @@ def call(body) {
         }
 
         stage 'Build'
-        sh 'npm run dist'
+        sh 'npm run build'
 
         if ( fileExists("dist") ) {
             stage 'NPM Publish'
