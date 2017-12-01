@@ -21,6 +21,7 @@ def call(body) {
 
         if ( fileExists("dist") ) {
             stage 'NPM Publish'
+            writeFile file: "/home/jenkins/dist/.npmrc", text: "registry=http://nexus.f8.test-kublet-cluster.nbg1.stayfriends.de/content/repositories/private-npm-registry/\r\ninit.author.name=Jenkins\r\nemail=jenk@ins.com\r\nalways-auth=true\r\n_auth=YWRtaW46YWRtaW4xMjM="
             sh 'cd dist && npm publish'
         }
     }
