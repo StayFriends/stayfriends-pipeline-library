@@ -21,14 +21,9 @@ def call(body) {
 
         if ( fileExists("dist") ) {
             stage 'NPM Publish'
-            sh 'cd dist && printf \'' +
-                    'registry=http://nexus.f8.test-kublet-cluster.nbg1.stayfriends.de/content/repositories/private-npm-registry/\\n' +
-                    'init.author.name = Jenkins\\n' +
-                    'email=jenk@ins.com\\n' +
-                    'always-auth=true\\n' +
-                    '_auth=YWRtaW46YWRtaW4xMjM=' +
-                    '\' > .npmrc'
-            sh 'cd dist && npm publish'
+            withNPM(npmrcConfig: 'private-registry-npmrc') {
+                sh 'cd dist && npm publish'
+            }
         }
     }
 }
