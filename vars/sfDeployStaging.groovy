@@ -35,7 +35,10 @@ def call(body) {
 
     //container(name: 'client') {
 
-	def envStage = utils.environmentNamespace(config.environment)
+	def envStage = config.environment
+	if ( envStage =~ /staging\d+/ ) {
+		utils.environmentNamespace(config.environment)
+	}
 	echo "deploying to environment: " + envStage
 
     //deployWithFabric8(envStage,config)
