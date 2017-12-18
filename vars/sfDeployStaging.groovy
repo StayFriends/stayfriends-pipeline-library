@@ -37,7 +37,7 @@ def call(body) {
 
 	def envStage = config.environment
 	if ( envStage =~ /staging\d+/ ) {
-		utils.environmentNamespace(config.environment)
+		envStage = utils.environmentNamespace(config.environment)
 	}
 	echo "deploying to environment: " + envStage
 
