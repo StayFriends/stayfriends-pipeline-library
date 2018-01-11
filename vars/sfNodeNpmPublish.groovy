@@ -9,7 +9,7 @@ def call(body) {
     podTemplate(name: nlabel, label: nlabel, serviceAccount: 'jenkins', containers: [
         [name: 'ng2-builder'],
         volumes: [
-                [$class: 'SecretVolume', mountPath: '/dist/.npmrc', secretName: 'jenkins-npm-settings']
+                [$class: 'SecretVolume', mountPath: '/jenkins-config/', secretName: 'jenkins-npm-settings']
         ]) {
         node(nlabel) {
 
@@ -30,6 +30,7 @@ def call(body) {
 
             if ( fileExists("dist") ) {
                 stage 'NPM Publish'
+                sh 'cp /jenkins-config/* dist/'
                 sh 'cd dist && npm publish'
             }
         }
