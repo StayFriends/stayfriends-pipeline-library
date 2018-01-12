@@ -6,8 +6,13 @@ def call(body) {
 
     echo "podTemplate label: " + nlabel
 
-    podTemplate(name: nlabel, label: nlabel, serviceAccount: 'jenkins', containers: [
-        [name: 'ng2-builder'],
+    podTemplate(
+        name: nlabel,
+        label: nlabel,
+        serviceAccount: 'jenkins',
+        containers: [
+            [name: 'ng2-builder'],
+        ],
         volumes: [
                 [$class: 'SecretVolume', mountPath: '/jenkins-config/', secretName: 'jenkins-npm-settings']
         ]) {
