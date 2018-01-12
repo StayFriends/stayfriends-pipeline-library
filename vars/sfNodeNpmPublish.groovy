@@ -22,7 +22,7 @@ def call(body) {
         }
 
         stage('NPM Publish') {
-            sh 'cp /home/jenkins/npm-config/.npmrc dist/'
+            sh 'cp /home/jenkins/npm-config/.npmrc-publish dist/.npmrc'
             sh 'cd dist && npm publish'
         }
     }
