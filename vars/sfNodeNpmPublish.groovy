@@ -5,8 +5,9 @@ def call(body) {
     container(name: 'ng2-builder') {
 
         stage('Dependencies') {
-        sh 'npm config list'
-        sh 'npm --loglevel info install'
+            sh 'cp /home/jenkins/npm-config/.npmrc .'
+            sh 'npm config list'
+            sh 'npm --loglevel info install'
         }
 
         stage('Test') {
@@ -17,11 +18,11 @@ def call(body) {
         }
 
         stage('Build') {
-        sh 'npm run build'
+            sh 'npm run build'
         }
 
-            sh 'cp /home/jenkins/npm-config/* dist/'
         stage('NPM Publish') {
+            sh 'cp /home/jenkins/npm-config/.npmrc dist/'
             sh 'cd dist && npm publish'
         }
     }
