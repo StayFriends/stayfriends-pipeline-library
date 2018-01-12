@@ -2,10 +2,6 @@
 
 def call(body) {
 
-    def nlabel = "buildpod.${env.JOB_NAME}.${env.BUILD_NUMBER}".replace('-', '_').replace('/', '_')
-
-    echo "podTemplate label: " + nlabel
-
     container(name: 'ng2-builder') {
 
         stage('Dependencies') {
