@@ -12,29 +12,30 @@ def call(body) {
 
     container(name: 'ng2-builder') {
 
-        stage 'Dependencies'
         // use local nexus repo as proxy
         // enable when nexus 3 available
         //writeFile file: "/home/jenkins/.npmrc", text: "registry = http://nexus/content/groups/npm-all"
+        stage('Dependencies') {
         sh 'npm config list'
         sh 'npm --loglevel info install'
+        }
 
-        if ( fileExists("src") ) {
-            stage 'Test'
+        stage('Test') {
             env.NODE_ENV = "test"
             sh 'npm run lint'
             sh 'Xvfb :99 -screen 0 1024x768x16 &'
             sh 'npm test'
         }
 
-        stage 'Build'
+        stage('Build') {
         sh 'npm run dist'
+    }
     }
 
     def imageVersion = ""
     
     container('client') {
-      stage 'Build Release'
+        stage('Build Release') {
       def versionPrefix = getNodeProjectVersion()
       def canaryVersion = "${versionPrefix}-build.${env.BUILD_NUMBER}"
       dir('dist') {
@@ -42,7 +43,7 @@ def call(body) {
           version = canaryVersion
         }
       }
-        
+        }
     }
 
     return imageVersion
