@@ -21,7 +21,6 @@ def call(body) {
         [name: 'jnlp', image: 'iocanel/jenkins-jnlp-client:latest', command:'/usr/local/bin/start.sh', args: '${computer.jnlpmac} ${computer.name}', ttyEnabled: false,
                 envVars: [[key: 'DOCKER_HOST', value: 'unix:/var/run/docker.sock']]]],
         volumes: [
-                [$class: 'PersistentVolumeClaim', mountPath: '/home/jenkins/workspace', claimName: 'jenkins-workspace'],
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/.docker', secretName: 'jenkins-docker-cfg'],
                 [$class: 'SecretVolume', mountPath: '/root/.ssh', secretName: 'jenkins-ssh-config'],
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/npm-config', secretName: 'jenkins-npm-settings'],
