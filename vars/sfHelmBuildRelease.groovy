@@ -37,7 +37,7 @@ def call(body) {
                 chartPackage = "${helmDir}/${chartPackage}"
 
                 // publish helm chart to helm repo
-                def s3Endpoint = "http://helmrepo-minio-svc"
+                def s3Endpoint = "http://helmrepo-minio-svc:9000"
                 def helmRepoPath = "testing"
                 def helmRepoUrl = "${s3Endpoint}/${helmRepoPath}"
                 // download index
