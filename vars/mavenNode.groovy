@@ -14,6 +14,7 @@ def call(body) {
                 // TODO update kubernetes plugin from 0.9 to min 1.0
                 //secretEnvVar(secretName: "helmrepo-minio-user", key: 'AWS_ACCESS_KEY_ID', secretKey: 'accesskey'),
                 //secretEnvVar(secretName: "helmrepo-minio-user", key: 'AWS_SECRET_ACCESS_KEY', secretKey: 'secretkey'),
+                [$class: 'SecretVolume', mountPath: '/home/jenkins/.aws', secretName: 'helmrepo-aws-config'],
                 [key: 'DOCKER_CONFIG', value: '/home/jenkins/.docker/'],
                 [key: 'KUBERNETES_MASTER', value: 'kubernetes.default']]],
         [name: 'jnlp', image: 'iocanel/jenkins-jnlp-client:latest', command:'/usr/local/bin/start.sh', args: '${computer.jnlpmac} ${computer.name}', ttyEnabled: false,
