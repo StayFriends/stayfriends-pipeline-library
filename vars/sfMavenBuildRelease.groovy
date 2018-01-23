@@ -29,5 +29,15 @@ def call(body) {
         version = config.version
     }
 
+    // // publish html
+    // publishHTML (target: [
+    //   allowMissing: true,
+    //   alwaysLinkToLastBuild: false,
+    //   keepAll: false,
+    //   reportDir: 'generated-docs',
+    //   reportFiles: 'index.html',
+    //   reportName: "Docs"
+    // ])
+
     return config.version
 }
