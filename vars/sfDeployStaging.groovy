@@ -82,7 +82,7 @@ def call(body) {
 			container(name: 'client') {
 				// install helm chart to namespace
 				// TODO use helm repo instead of local dir
-	            def chartPackage = "${config.name}-${config.version}.tgz"
+	            def chartPackage = "target/helm/${config.name}-${config.version}.tgz"
 				def helmRelease = "${config.name}-${envStage}"
 				// // for Jobs, helm need to delete the release first
 				// if ( fileExists("helm/${config.name}/templates/job.yaml") ) {

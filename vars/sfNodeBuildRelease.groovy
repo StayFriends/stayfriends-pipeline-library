@@ -44,5 +44,9 @@ def call(body) {
         }
     }
 
+    sfHelmBuildRelease {
+        version = imageVersion
+    }
+
     return imageVersion
 }
