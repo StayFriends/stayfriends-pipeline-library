@@ -4,26 +4,46 @@ def call(body) {
 
     container(name: 'ng2-builder') {
 
-        stage('Dependencies') {
-            sh 'cp /home/jenkins/npm-config/.npmrc .'
-            sh 'npm config list'
-            sh 'npm --loglevel info install'
+        try {
+            stage('Dependencies') {
+                sh 'cp /home/jenkins/npm-config/.npmrc .'
+                sh 'npm config list'
+                sh 'npm --loglevel info install'
+            }
+        } catch (e) {
+            error('could not resolve dependencies')
         }
 
-        stage('Test') {
-            env.NODE_ENV = "test"
-            sh 'npm run lint'
-            sh 'Xvfb :99 -screen 0 1024x768x16 &'
-            sh 'npm run test'
+        try {
+            stage('Test') {
+                try {
+                    env.NODE_ENV = "test"
+                    sh 'npm run lint'
+                } catch (e) {
+                    error('could not lint artefact')
+                }
+                    sh 'Xvfb :99 -screen 0 1024x768x16 &'
+                    sh 'npm run test'
+            }
+        } catch (e) {
+            error('could not test artefact')
         }
 
-        stage('Build') {
-            sh 'npm run build'
+        try {
+            stage('Build') {
+                sh 'npm run build'
+            }
+        } catch (e) {
+            error('could not build artefact')
         }
 
-        stage('NPM Publish') {
-            sh 'cp /home/jenkins/npm-config/.npmrc-publish dist/.npmrc'
-            sh 'cd dist && npm publish'
+        try {
+            stage('NPM Publish') {
+                sh 'cp /home/jenkins/npm-config/.npmrc-publish dist/.npmrc'
+                sh 'cd dist && npm publish'
+            }
+        } catch (e) {
+            error('could not publish to repository')
         }
     }
 }
