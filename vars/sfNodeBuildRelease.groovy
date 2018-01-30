@@ -33,9 +33,10 @@ def call(body) {
         sfHelmBuildRelease {
             version = imageVersion
         }
+        
+        return imageVersion
     } catch (e) {
         error('could not install release')
     }
 
-    return imageVersion
 }
