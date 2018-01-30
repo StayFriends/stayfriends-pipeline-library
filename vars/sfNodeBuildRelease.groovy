@@ -15,6 +15,7 @@ def call(body) {
         sfNodeNpmBuild()
     }
 
+    try {
         def imageVersion = ""
         
         container('client') {
@@ -32,6 +33,9 @@ def call(body) {
         sfHelmBuildRelease {
             version = imageVersion
         }
+    } catch (e) {
+        error('could not install release')
+    }
 
     return imageVersion
 }
