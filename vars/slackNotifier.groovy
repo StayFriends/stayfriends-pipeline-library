@@ -8,6 +8,7 @@ def call(String channel, body) {
     notifyBuild(channel, currentBuild.result)
   } catch (e) {
     notifyBuild(channel, 'FAILURE', e.message)
+    throw e;
   }
 }
 
