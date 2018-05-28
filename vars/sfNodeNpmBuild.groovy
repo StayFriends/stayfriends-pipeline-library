@@ -6,6 +6,9 @@ def call(body) {
         stage('Dependencies') {
             sh 'cp /home/jenkins/npm-config/.npmrc .'
             sh 'npm config list'
+            sh 'npm cache clean --force'
+            sh 'rm -rf ./node_modules'
+            sh 'rm -rf ./package-lock.json'
             sh 'npm --loglevel info install'
         }
     } catch (e) {
