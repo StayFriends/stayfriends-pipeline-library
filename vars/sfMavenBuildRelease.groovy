@@ -15,7 +15,7 @@ def call(body) {
 
         stage('Maven deploy') {
             sh "git checkout -b ${env.JOB_NAME}-${config.version}"
-            sh "mvn org.codehaus.mojo:versions-maven-plugin:2.2:set -U -DnewVersion=${config.version}"
+            sh "mvn org.codehaus.mojo:versions-maven-plugin:2.5:set -U -DnewVersion=${config.version}"
             sh "mvn --batch-mode --update-snapshots --errors clean deploy"        
         }
         
