@@ -39,5 +39,5 @@ def call(body) {
     //   reportName: "Docs"
     // ])
 
-    return config.version
+    return config
 }
