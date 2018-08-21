@@ -8,7 +8,8 @@ def call(body) {
     body()
 
     if ( !config.version ) {
-        config.version = "1.0.${env.BUILD_NUMBER}"
+        pom = readMavenPom file: 'pom.xml'
+        config.version = "${pom.version}-BUILD-${env.BUILD_NUMBER}"
     }
 
     container(name: 'maven') {
