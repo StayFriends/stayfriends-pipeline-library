@@ -10,14 +10,16 @@ def call(body) {
 
     echo "build config = " + config
 
-    def imageVersion = config.version
-    
     container('client') {
       stage 'Build Release'
-        imageVersion = performCanaryRelease {
-          version = imageVersion
-      }
+
+      def registry = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}"
+      def imageName = "${registry}/${config.group}/${config.name}:${config.version}"
+      config.image = imageName
+      
+      sh "docker build -t ${imageName} ."
+      sh "docker push ${imageName}"
     }
 
-    return imageVersion
+    return config
 }
