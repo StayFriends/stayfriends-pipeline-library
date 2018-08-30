@@ -9,7 +9,7 @@ def call(body) {
 
     if ( !config.version ) {
         pom = readMavenPom file: 'pom.xml'
-        if ( !pom.version || pom.version == '${global.version}' ) {
+	if ( !pom.version || pom.version == '${global.version}' || pom.version.contains('GENERATED') ) {
             config.version = "1.0.${env.BUILD_NUMBER}"
         } else {
             config.version = "${pom.version}-BUILD-${env.BUILD_NUMBER}"
