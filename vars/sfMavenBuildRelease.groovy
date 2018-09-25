@@ -7,9 +7,12 @@ def call(body) {
     body.delegate = config
     body()
 
+    pom = readMavenPom file: 'pom.xml'
+    if (!config.name) {
+        config.name = pom.artifactId
+    }
     if ( !config.version ) {
-        pom = readMavenPom file: 'pom.xml'
-	if ( !pom.version || pom.version == '${global.version}' || pom.version.contains('GENERATED') ) {
+	    if ( !pom.version || pom.version == '${global.version}' || pom.version.contains('GENERATED') ) {
             config.version = "1.0.${env.BUILD_NUMBER}"
         } else {
             config.version = "${pom.version}-BUILD-${env.BUILD_NUMBER}"
@@ -31,6 +34,7 @@ def call(body) {
     }
 
     sfHelmBuildRelease {
+        name = config.name
         version = config.version
     }
 
