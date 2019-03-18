@@ -2,6 +2,7 @@
 
 def call(body) {
 
+    echo "******************************************* YOU ARE NOW IN TESTING BRANCH ***********************************"
     mavenNode() {
 
         sfCheckout {}
