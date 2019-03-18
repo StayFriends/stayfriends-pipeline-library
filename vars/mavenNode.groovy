@@ -23,7 +23,8 @@ def call(body) {
                 [$class: 'PersistentVolumeClaim', mountPath: '/home/jenkins/workspace', claimName: 'jenkins-workspace'],
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/.m2/', secretName: 'jenkins-maven-settings'],
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/.docker', secretName: 'jenkins-docker-cfg'],
-                [$class: 'SecretVolume', mountPath: '/root/.ssh', secretName: 'jenkins-ssh-config'],
+               // [$class: 'SecretVolume', mountPath: '/root/.ssh', secretName: 'jenkins-ssh-config'],
+                [$class: 'PersistentVolumeClaim', mountPath: '/root/.ssh', claimName: 'jenkins-ssh-config'],
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/.aws', secretName: 'helmrepo-aws-config'],
                 [$class: 'HostPathVolume', mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock']
         ]) {
