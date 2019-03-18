@@ -22,7 +22,8 @@ def call(body) {
                 envVars: [[key: 'DOCKER_HOST', value: 'unix:/var/run/docker.sock']]]],
         volumes: [
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/.docker', secretName: 'jenkins-docker-cfg'],
-                [$class: 'SecretVolume', mountPath: '/root/.ssh', secretName: 'jenkins-ssh-config'],
+                //[$class: 'SecretVolume', mountPath: '/root/.ssh', secretName: 'jenkins-ssh-config'],
+                [$class: 'PersistentVolumeClaim', mountPath: '/root/.ssh', claimName: 'jenkins-ssh-config'],
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/npm-config', secretName: 'jenkins-npm-settings'],
                 [$class: 'SecretVolume', mountPath: '/home/jenkins/.aws', secretName: 'helmrepo-aws-config'],
                 [$class: 'HostPathVolume', mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'],
