@@ -15,7 +15,8 @@ def call(body) {
 	    if ( !pom.version || pom.version == '${global.version}' || pom.version.contains('GENERATED') ) {
             config.version = "1.0.${env.BUILD_NUMBER}"
         } else {
-            config.version = "${pom.version}-BUILD-${env.BUILD_NUMBER}"
+	    def buildReleaseTimestamp = sh(returnStdout: true, script: 'date +%Y%m%d%H%M%S').trim()
+            config.version = "${pom.version}-BUILD-${buildReleaseTimestamp}-${env.BUILD_NUMBER}"
         }
     }
 
