@@ -16,7 +16,7 @@ def call(body) {
             config.version = "1.0.${env.BUILD_NUMBER}"
         } else {
 	    def buildReleaseTimestamp = sh(returnStdout: true, script: 'date +%Y%m%d%H%M%S').trim()
-            config.version = "${pom.version}-BUILD-${buildReleaseTimestamp}-${env.BUILD_NUMBER}"
+            config.version = "${buildReleaseTimestamp}-${pom.version}-BUILD-${env.BUILD_NUMBER}"
         }
     }
 
